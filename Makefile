@@ -86,7 +86,7 @@ test: compile transcompile
 	@echo "----------------------"
 
 	@# Preceding dash means that make will continue in case of errors
-	@-export PYTHONPATH=`pwd`:$(PYTHONPATH); \
+	@-export PYTHONPATH=/Applications/Qgis.app/Contents/Resources/python; \
 		export QGIS_DEBUG=0; \
 		export QGIS_LOG_FILE=/dev/null; \
 		nosetests -v --with-id --with-coverage --cover-package=. \

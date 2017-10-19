@@ -33,9 +33,18 @@ def get_qgis_app():
     global QGIS_APP  # pylint: disable=W0603
 
     if QGIS_APP is None:
+
+        #Fixed for MACOS
+        sys.path.append('/Applications/QGis.app/Contents/Resources/python')
+
+
         gui_flag = True  # All test will run qgis in gui mode
         #noinspection PyPep8Naming
         QGIS_APP = QgsApplication(sys.argv, gui_flag)
+
+        #MacOSX Test fix
+        QgsApplication.setPrefixPath(r"/Applications/QGIS.app/Contents/MacOS", True)
+
         # Make sure QGIS_PREFIX_PATH is set in your env if needed!
         QGIS_APP.initQgis()
         s = QGIS_APP.showSettings()
