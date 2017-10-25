@@ -17,14 +17,14 @@ class OsTileLocator:
 
         # False Origin of Grid 0,0 starts at Letter S
         # offset by 1,2 on grid lookup to start on this letter
-        firstLetterX = math.trunc( self.x / 500000) + 1
-        firstLetterY = math.trunc( self.y / 500000) + 2
+        firstLetterX = math.trunc( self.x / 500000) + 2
+        firstLetterY = math.trunc( self.y / 500000) + 1
 
         secondLetterX = math.trunc( (self.x % 500000) / 100000)
         secondLetterY = math.trunc( (self.y % 500000) / 100000)      
 
-        firstLetter = self.grid[firstLetterX][firstLetterY]
-        secondLetter = self.grid[secondLetterX][secondLetterY]
+        firstLetter = self.grid[firstLetterY][firstLetterX]
+        secondLetter = self.grid[secondLetterY][secondLetterX]
 
         return firstLetter + secondLetter
 

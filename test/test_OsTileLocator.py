@@ -11,8 +11,12 @@ class TestOsTileLocator(unittest.TestCase):
     def test_hundredKmSqTile(self):
         """Test Hundred Km Sq Tile"""
 
+        self.assertEqual( OsTileLocator(541330,120443).hundredKmSqTile(), 'TQ') 
         OV = OsTileLocator(593091,587066)
         self.assertEqual( OV.hundredKmSqTile() , 'OV')
+        self.assertEqual( OsTileLocator(593091,587066).hundredKmSqTile() , 'OV')
+        self.assertEqual( OsTileLocator(358161,361649).hundredKmSqTile(), 'SJ') 
+        self.assertEqual( OsTileLocator(337914,667001).hundredKmSqTile(), 'NT') 
 
     def test_tenKmSqTile(self):
         """Test Ten Km Sq Tile"""
@@ -25,6 +29,9 @@ class TestOsTileLocator(unittest.TestCase):
 
         OV = OsTileLocator(593091,587066)
         self.assertEqual( OV.fiveKmSqTile() , 'OV98NW')
+        self.assertEqual( OsTileLocator(541330,120443).fiveKmSqTile(), 'TQ42SW') 
+        self.assertEqual( OsTileLocator(358161,361649).fiveKmSqTile(), 'SJ56SE') 
+        self.assertEqual( OsTileLocator(337914,667001).fiveKmSqTile(), 'NT36NE') 
 
     def test_withinGB(self):
         """Test GB boundary"""
