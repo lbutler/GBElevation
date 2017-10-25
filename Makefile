@@ -89,13 +89,21 @@ test: compile transcompile
 	@-export PYTHONPATH=/Applications/Qgis.app/Contents/Resources/python; \
 		export QGIS_DEBUG=0; \
 		export QGIS_LOG_FILE=/dev/null; \
-		nosetests -v --with-id --with-coverage --cover-package=. \
+		nosetests -v --with-id \
 		3>&1 1>&2 2>&3 3>&- || true
+
+testcoverage: compile transcompile
+	@echo
 	@echo "----------------------"
-	@echo "If you get a 'no module named qgis.core error, try sourcing"
-	@echo "the helper script we have provided first then run make test."
-	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
+	@echo "Regression Test Suite"
 	@echo "----------------------"
+
+	@# Preceding dash means that make will continue in case of errors
+	@-export PYTHONPATH=/Applications/Qgis.app/Contents/Resources/python; \
+		export QGIS_DEBUG=0; \
+		export QGIS_LOG_FILE=/dev/null; \
+		nosetests -v --with-id --with-coverage --cover-erase --cover-package=. \
+		3>&1 1>&2 2>&3 3>&- || true
 
 deploy: compile doc transcompile
 	@echo
