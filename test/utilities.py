@@ -22,13 +22,14 @@ def get_qgis_app():
     If QGIS is already running the handle to that app will be returned.
     """
 
-    try:
-        from PyQt4 import QtGui, QtCore
-        from qgis.core import QgsApplication
-        from qgis.gui import QgsMapCanvas
-        from qgis_interface import QgisInterface
-    except ImportError:
-        return None, None, None, None
+
+    from PyQt4 import QtGui, QtCore
+    from qgis.core import QgsApplication
+    from qgis.gui import QgsMapCanvas
+
+    # TODO: fix iface interface for testing
+    #from qgis_interface import QgisInterface
+
 
     global QGIS_APP  # pylint: disable=W0603
 
@@ -61,10 +62,11 @@ def get_qgis_app():
         CANVAS = QgsMapCanvas(PARENT)
         CANVAS.resize(QtCore.QSize(400, 400))
 
+    # TODO: fix iface interface for testing
     global IFACE  # pylint: disable=W0603
-    if IFACE is None:
-        # QgisInterface is a stub implementation of the QGIS plugin interface
-        #noinspection PyPep8Naming
-        IFACE = QgisInterface(CANVAS)
+    #if IFACE is None:
+    #    # QgisInterface is a stub implementation of the QGIS plugin interface
+    #    #noinspection PyPep8Naming
+    #    IFACE = QgisInterface(CANVAS)
 
     return QGIS_APP, CANVAS, IFACE, PARENT
