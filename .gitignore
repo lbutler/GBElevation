@@ -2,3 +2,6 @@
 .DS_Store
 .noseids
 .coverage
+
+#OS Grid files
+*.ntf
