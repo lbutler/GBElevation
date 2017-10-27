@@ -16,14 +16,19 @@ QGIS_APP = get_qgis_app()
 path = os.path.join(os.path.dirname(__file__), 'testdata', 'NT48SE.NTF')
 title = 'NT48SE'
 layer = QgsVectorLayer(path, title, 'ogr')
-NT48SE = OsGroundGridCalculator(layer, 10)
-NT48 = OsGroundGridCalculator(layer, 50)
+NT48SE = OsGroundGridCalculator(layer, 10, 2)
+NT48 = OsGroundGridCalculator(layer, 50, 1)
 
 class TestOsGroundGridCalculator(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
         pass
+
+    def test_calculateElevation10mIWvalues(self):
+
+
+        self.assertAlmostEqual( NT48.calculateElevation(346811, 683070), 21.05)
 
     def test_calculateElevation10m(self):
         """Test Elevation for 10m"""
@@ -62,19 +67,17 @@ class TestOsGroundGridCalculator(unittest.TestCase):
 
         values = [20,10,30,35]
         distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
-        power = 2
 
         answer = 28.27963613
 
-        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance, power), answer)
+        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance), answer)
 
         values = [20,10,30,35]
         distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
-        power = 1
 
         answer = 26.02779539
 
-        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance, power), answer)
+        self.assertAlmostEqual( NT48._inverseDistanceWeighted(values, distance), answer)
 
 
 
