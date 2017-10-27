@@ -2,3 +2,4 @@
 
 from OsTileLocator import OsTileLocator
 from OsGroundGridCalculator import OsGroundGridCalculator
+from OsGroundGrid import OsGroundGrid
