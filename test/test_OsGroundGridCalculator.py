@@ -25,8 +25,14 @@ class TestOsGroundGridCalculator(unittest.TestCase):
         """Runs before each test."""
         pass
 
-    def test_calculateElevationAtGridIntersection(self):
+    def test_calculateElevation10m(self):
         """Test Elevation for 10m"""
+
+        self.assertAlmostEqual( NT48SE.calculateElevation(346895, 682505), 38.875)
+        self.assertAlmostEqual( NT48SE.calculateElevation(346892.5, 682505), 38.81944444)
+
+    def test_calculateElevationAtGridIntersection(self):
+        """Test Elevation for 10m at intersections"""
 
         self.assertEqual( NT48SE.calculateElevation(346790, 683350), -2)
         self.assertEqual( NT48SE.calculateElevation(346790, 683360), -2)
@@ -50,6 +56,26 @@ class TestOsGroundGridCalculator(unittest.TestCase):
 
         self.assertFalse( NT48._isAtIntersection(346800,682740))
         self.assertFalse( NT48._isAtIntersection(346826,682745.2))
+
+    def test_inverseDistanceWeighted(self):
+        """Manual check of IDW function"""
+
+        values = [20,10,30,35]
+        distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
+        power = 2
+
+        answer = 28.27963613
+
+        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance, power), answer)
+
+        values = [20,10,30,35]
+        distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
+        power = 1
+
+        answer = 26.02779539
+
+        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance, power), answer)
+
 
 
 if __name__ == '__main__':
