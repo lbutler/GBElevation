@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureRequest,QgsGeometry
+from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureRequest,QgsGeometry, QgsRectangle
 
 from GBElevation.models import *
 
@@ -19,7 +19,11 @@ class OSGroundGridCalculatorIDW(OsGroundGridCalculator):
 
         feat = QgsGeometry().fromPoint( QgsPoint(x, y) )
 
-        nearest = self._gridIndex.nearestNeighbor(QgsPoint(x, y), 4)
+        pointTopLeft = QgsPoint(x - self.gridInterval, y + self.gridInterval)
+        pointBottomRight  = QgsPoint(x + self.gridInterval, y - self.gridInterval)
+        square = QgsRectangle(pointTopLeft, pointBottomRight)
+
+        nearest = self._gridIndex.intersects(square)
         for n in nearest:
             f = self.gridLayer.getFeatures(request=QgsFeatureRequest(n))
             for g in f:
