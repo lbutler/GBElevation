@@ -4,12 +4,11 @@ from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureReque
 
 class OsGroundGridCalculator:
 
-    def __init__(self, gridLayer, gridInterval, power):
+    def __init__(self, gridLayer, gridInterval):
 
         self.gridLayer = gridLayer
         self.gridInterval = gridInterval
         self._gridIndex = QgsSpatialIndex( self.gridLayer.getFeatures() )
-        self.power = power
 
 
     def calculateElevation(self, x, y):
@@ -17,19 +16,7 @@ class OsGroundGridCalculator:
         if self._isAtIntersection(x, y):
             return self._getIntersectionElevation(x,y)
         else:
-            values = []
-            distances = []
-
-            feat = QgsGeometry().fromPoint( QgsPoint(x, y) )
-
-            nearest = self._gridIndex.nearestNeighbor(QgsPoint(x, y), 4)
-            for n in nearest:
-                f = self.gridLayer.getFeatures(request=QgsFeatureRequest(n))
-                for g in f:
-                    values.append( g.attribute("HEIGHT") )
-                    distances.append( g.geometry().distance(feat) )
-
-            return self._inverseDistanceWeighted(values, distances)
+            return self._useAlgorithm(x, y)
 
 
     def _getIntersectionElevation(self, x, y):
@@ -48,15 +35,3 @@ class OsGroundGridCalculator:
             return True
         else:
             return False
-
-
-    def _inverseDistanceWeighted(self, values, distances):
-
-        top = 0
-        bottom = 0
-        for value, distance in zip(values, distances):
-            top += value/(distance**self.power)
-            bottom +=  1/(distance**self.power)
-
-        return top/bottom
-

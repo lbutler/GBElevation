@@ -16,7 +16,7 @@ class OsGroundGrid:
 		path = os.path.join(directory, gridName + '.NTF')
 		self.layer = QgsVectorLayer(path, gridName, 'ogr')
 
-		self.grid = OsGroundGridCalculator(self.layer, 10, 2)
+		self.grid = OSGroundGridCalculatorIDW(self.layer, 10, 2)
 
 	def run(self):
 
