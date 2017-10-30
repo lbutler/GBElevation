@@ -25,11 +25,6 @@ class TestOsGroundGridCalculator(unittest.TestCase):
         """Runs before each test."""
 
 
-    def test_calculateElevation10mIWvalues(self):
-
-        #self.assertAlmostEqual( NT48.calculateElevation(346811, 683070), 21.05)
-        pass
-
     def test_calculateElevationAtGridIntersection(self):
         """Test Elevation for 10m at intersections"""
 
