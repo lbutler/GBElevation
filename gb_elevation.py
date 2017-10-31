@@ -25,7 +25,7 @@ from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
-from gb_elevation_dialog import GBElevationDialog
+from ui.gb_elevation_dialog import GBElevationDialog
 import os.path
 
 
@@ -133,7 +133,7 @@ class GBElevation:
         """
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = GBElevationDialog()
+        self.dlg = GBElevationDialog(self.iface)
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -184,10 +184,12 @@ class GBElevation:
         """Run method that performs all the real work"""
         # show the dialog
         self.dlg.show()
+        self.dlg.prepareForm()
+
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
-            pass
+            self.dlg.run()
