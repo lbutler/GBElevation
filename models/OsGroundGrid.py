@@ -8,33 +8,38 @@ from GBElevation.models import *
 
 class OsGroundGrid:
 
-	def __init__(self, updateLayer, features, gridName, directory):
-		self.updateLayer = updateLayer
-		self.features = features
-		self.gridName = gridName
+    def __init__(self, updateLayer, featureIds, gridName, directory, elevationAttribute):
+        self.updateLayer = updateLayer
+        
+        self.gridName = gridName
+        self.elevationAttribute = elevationAttribute
 
-		path = os.path.join(directory, gridName + '.NTF')
-		self.layer = QgsVectorLayer(path, gridName, 'ogr')
+        request = QgsFeatureRequest()
+        request.setFilterFids(featureIds)
+        self.features = updateLayer.getFeatures(request)
 
-		self.grid = OSGroundGridCalculatorIDW(self.layer, 10, 2)
+        path = os.path.join(directory, gridName + '.NTF')
+        self.layer = QgsVectorLayer(path, gridName, 'ogr')
 
-	def run(self):
+        self.grid = OSGroundGridCalculatorIDW(self.layer, 10, 2)
 
-		dp = self.updateLayer.dataProvider()
+    def run(self):
 
-		request = QgsFeatureRequest()
-		request.setSubsetOfAttributes([])
-		request.setFlags(QgsFeatureRequest.NoGeometry)
+        dp = self.updateLayer.dataProvider()
 
-		updateMap = {}
-		updateFieldIdx = dp.fields().indexFromName('height')
+        #request = QgsFeatureRequest()
+        #request.setSubsetOfAttributes([])
+        #request.setFlags(QgsFeatureRequest.NoGeometry)
 
-		for feature in self.features:
-			elevation = self.grid.calculateElevation( feature.geometry().asPoint().x(), feature.geometry().asPoint().y() )
-			updateMap[feature.id()] = { updateFieldIdx: elevation}
+        updateMap = {}
+        updateFieldIdx = dp.fields().indexFromName(self.elevationAttribute)
 
-		dp.changeAttributeValues( updateMap )
+        for feature in self.features:
+            elevation = self.grid.calculateElevation( feature.geometry().asPoint().x(), feature.geometry().asPoint().y() )
+            updateMap[feature.id()] = { updateFieldIdx: elevation}
 
-		QgsMapLayerRegistry.instance().removeMapLayer( self.layer.id() )
+        dp.changeAttributeValues( updateMap )
+
+        QgsMapLayerRegistry.instance().removeMapLayer( self.layer.id() )
 
 

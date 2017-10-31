@@ -33,11 +33,14 @@ class TestOsGroundGrid(unittest.TestCase):
         # update layer's extent when new features have been added
         # because change of extent in provider is not propagated to the layer
         self.vl.updateExtents()
-        self.nt48se = OsGroundGrid(self.vl, self.vl.getFeatures(), gridName, directory)
+
+        featureIds = [1]
+
+        self.nt48se = OsGroundGrid(self.vl, featureIds, gridName, directory)
 
 
     def test_run(self):
-        """Tests run"""
+        """Tests OsGroundGrid run"""
         
         self.nt48se.run()
 
