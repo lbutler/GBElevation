@@ -34,7 +34,6 @@ class OsLandform:
             if self._dtmExists(gridRef):
                 self._grids.append( OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, self.dtmDirectory, self.elevationAttribute, self.interpolation, self.gridSpacing) )
 
-        print self._grids
 
     def _createGridDictionary(self):
 
@@ -45,7 +44,6 @@ class OsLandform:
             else:
                 self._gridDictionary[ OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmSqTile() ].append(feature.id())
 
-        print self._gridDictionary
 
     def _dtmExists(self, dtmName):
         path = os.path.join(self.dtmDirectory, dtmName + '.NTF')
