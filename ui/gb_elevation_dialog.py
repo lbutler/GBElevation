@@ -24,9 +24,11 @@
 import os
 
 from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QFileDialog, QListWidgetItem, QBrush, QColor
+from PyQt4.QtGui import QFileDialog, QListWidgetItem, QBrush, QColor, QInputDialog, QLineEdit
+from PyQt4.QtCore import QVariant
 
-from qgis.core import QgsMapLayerRegistry, QGis
+from qgis.core import QgsMapLayerRegistry, QGis, QgsVectorDataProvider, QgsField
+from qgis.gui import QgsMessageBar
 
 from GBElevation.models import OsTileLocator, OsLandform
 
@@ -49,22 +51,28 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
         # Link Actons
         self.dtmFolderButton.clicked.connect(self.selectDtmFolderLocation)
+        self.dtmFolder.editingFinished.connect(self._updateDtmListItems)
         self.pointLayersComboBox.currentIndexChanged.connect(self._pointsLayerChanged)
+        self.attributeButton.clicked.connect(self._createElevationAttribute)
+
+        self.os10mRadioButton.toggled.connect(self._updateDtmListItems)
+        self.os50mRadioButton.toggled.connect(self._updateDtmListItems)
 
 
     def run(self):
 
-        layerId =  self.pointLayersComboBox.itemData( self.pointLayersComboBox.currentIndex() )
-        registry = QgsMapLayerRegistry.instance()
-        layer = registry.mapLayer( layerId )
+        layer = self._getCurrentSelectedLayer()
 
         elevationAttribute = self.attributeComboBox.itemText(self.attributeComboBox.currentIndex())
         dtmDirectory = self.dtmFolder.text()
         interpolation = self.interpolationMethodComboBox.currentIndex()
-        gridSpacing = 10
+
+        gridSpacing = self._getGridSpacing()
 
         self.osLandformObject = OsLandform(layer, elevationAttribute, dtmDirectory, interpolation, gridSpacing)
         self.osLandformObject.run()
+
+        self.iface.messageBar().pushMessage("GB NTF Elevations", "Elevations have been added", level=QgsMessageBar.INFO)
 
 
     def prepareForm(self):
@@ -74,6 +82,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         folderPath = ''
         filename = QFileDialog.getExistingDirectory(self, "Open Directory", folderPath, QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks);
         self.dtmFolder.setText(filename)
+        self._updateDtmListItems()
 
     def addPointLayers(self):
         self.pointLayersComboBox.clear()
@@ -84,14 +93,12 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
 
     def _pointsLayerChanged(self, idx):
-        
+
         if idx <> -1:
-            layerId=  self.pointLayersComboBox.itemData(idx)
-            registry = QgsMapLayerRegistry.instance()
-            layer = registry.mapLayer( layerId )
+            layer = self._getCurrentSelectedLayer()
 
             self._updateAttributes(layer)
-            self._updateDtmListItems(layer)
+            self._updateDtmListItems()
 
         #self._getDtmsForLayer(layerId)
 
@@ -109,8 +116,9 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         self.attributeComboBox.addItems(field_names)
 
 
-    def _updateDtmListItems(self, layer):
+    def _updateDtmListItems(self):
 
+        layer = self._getCurrentSelectedLayer()
         self.dtmList.clear()
         dtms = list(self._getDtmsForLayer(layer))
 
@@ -133,9 +141,16 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
     def _getDtmsForLayer(self, layer):
         output = set()
         features = layer.getFeatures()
+        gridSpacing = self._getGridSpacing()
+
+        print gridSpacing
+
         for feature in features:
             featurePoint = feature.geometry().asPoint()
-            output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).fiveKmSqTile() )
+            if gridSpacing == 10:
+                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).fiveKmSqTile() )
+            else:
+                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmSqTile() )
 
         return output
 
@@ -145,11 +160,49 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         return os.path.isfile(path)
 
 
+    def _createElevationAttribute(self):
+        text, okPressed = QInputDialog.getText(self, "Get text","Your name:", QLineEdit.Normal, "")
+        if okPressed and text != '':
+            success = self._createAttribute(text)
+
+            layer = self._getCurrentSelectedLayer()
+            self._updateAttributes(layer)
 
 
+    def _createAttribute(self, text):
+        layer = self._getCurrentSelectedLayer()
+        provider = layer.dataProvider()
+        caps = provider.capabilities()
+        # Check if attribute is already there, return "-1" if not
+        ind = provider.fieldNameIndex(text)
+        try:
+           if ind == -1:
+               if caps & QgsVectorDataProvider.AddAttributes:
+                   res = provider.addAttributes( [ QgsField(text,QVariant.Double) ] )
+                   layer.updateFields()
+                   return True
+               else:
+                   self.iface.messageBar().pushMessage("Error", "Unable to update the selected layer, it may be read-only", level=QgsMessageBar.CRITICAL)
+           else:
+               self.iface.messageBar().pushMessage("Error", "The field '" + text + "' already exists in the selected layer", level=QgsMessageBar.CRITICAL)
+        except:
+            return False
+            self.iface.messageBar().pushMessage("Error", "Unable to update the selected layer, it may be read-only", level=QgsMessageBar.CRITICAL)
 
 
-        
+    def _getCurrentSelectedLayer(self):
+        layerId =  self.pointLayersComboBox.itemData( self.pointLayersComboBox.currentIndex() )
+        registry = QgsMapLayerRegistry.instance()
+        layer = registry.mapLayer( layerId )
+
+        return layer
+
+    def _getGridSpacing(self):
+        if self.os10mRadioButton.isChecked():
+            return 10
+        else:
+            return 50
+
 
 
 
