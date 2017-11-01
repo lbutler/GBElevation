@@ -84,13 +84,14 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
 
     def _pointsLayerChanged(self, idx):
+        
+        if idx <> -1:
+            layerId=  self.pointLayersComboBox.itemData(idx)
+            registry = QgsMapLayerRegistry.instance()
+            layer = registry.mapLayer( layerId )
 
-        layerId=  self.pointLayersComboBox.itemData(idx)
-        registry = QgsMapLayerRegistry.instance()
-        layer = registry.mapLayer( layerId )
-
-        self._updateAttributes(layer)
-        self._updateDtmListItems(layer)
+            self._updateAttributes(layer)
+            self._updateDtmListItems(layer)
 
         #self._getDtmsForLayer(layerId)
 
