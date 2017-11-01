@@ -32,7 +32,7 @@ class OsLandform:
 
         for gridRef in self._gridDictionary:
             if self._dtmExists(gridRef):
-                self._grids.append( OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, self.dtmDirectory, self.elevationAttribute) )
+                self._grids.append( OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, self.dtmDirectory, self.elevationAttribute, self.interpolation, self.gridSpacing) )
 
         print self._grids
 

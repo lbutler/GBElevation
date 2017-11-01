@@ -8,11 +8,13 @@ from GBElevation.models import *
 
 class OsGroundGrid:
 
-    def __init__(self, updateLayer, featureIds, gridName, directory, elevationAttribute):
+    def __init__(self, updateLayer, featureIds, gridName, directory, elevationAttribute, interpolation, gridSpacing):
         self.updateLayer = updateLayer
         
         self.gridName = gridName
         self.elevationAttribute = elevationAttribute
+        self.interpolation = interpolation
+        self.gridSpacing = gridSpacing
 
         request = QgsFeatureRequest()
         request.setFilterFids(featureIds)
@@ -21,7 +23,10 @@ class OsGroundGrid:
         path = os.path.join(directory, gridName + '.NTF')
         self.layer = QgsVectorLayer(path, gridName, 'ogr')
 
-        self.grid = OSGroundGridCalculatorIDW(self.layer, 10, 2)
+        if self.interpolation == 0:
+            self.grid = OSGroundGridCalculatorBilinear(self.layer, self.gridSpacing)
+        else:
+            self.grid = OSGroundGridCalculatorIDW(self.layer, self.gridSpacing,2)
 
     def run(self):
 
