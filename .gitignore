@@ -2,6 +2,7 @@
 .DS_Store
 .noseids
 .coverage
+Thumbs.db
 
 #OS Grid files
 *.ntf
