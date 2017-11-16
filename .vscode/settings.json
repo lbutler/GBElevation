@@ -1,0 +1,21 @@
+{
+    "python.unitTest.nosetestArgs": [
+        "."
+    ],
+    "python.unitTest.nosetestsEnabled": true,
+    "python.pythonPath": "/usr/bin/python",
+    "python.autoComplete.extraPaths": [
+        "/Applications/Qgis.app/Contents/Resources/python"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "*/**/**pyc": true,
+        "**/.hg": true,
+        "**/.noseids": true,
+        "**/.coverage": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    }
+}
