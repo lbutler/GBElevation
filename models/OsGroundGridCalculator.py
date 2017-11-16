@@ -9,6 +9,7 @@ class OsGroundGridCalculator:
         self.gridLayer = gridLayer
         self.gridInterval = gridInterval
         self._gridIndex = QgsSpatialIndex( self.gridLayer.getFeatures() )
+        self.allfeatures = {feature.id(): feature for (feature) in self.gridLayer.getFeatures()}
 
 
     def calculateElevation(self, x, y):

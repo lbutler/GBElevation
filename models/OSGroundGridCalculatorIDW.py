@@ -24,11 +24,10 @@ class OSGroundGridCalculatorIDW(OsGroundGridCalculator):
         square = QgsRectangle(pointTopLeft, pointBottomRight)
 
         nearest = self._gridIndex.intersects(square)
-        for n in nearest:
-            f = self.gridLayer.getFeatures(request=QgsFeatureRequest(n))
-            for g in f:
-                values.append( g.attribute("HEIGHT") )
-                distances.append( g.geometry().distance(feat) )
+        for nearid in nearest:
+            f = self.allfeatures[nearid]
+            values.append( f.attribute("HEIGHT") )
+            distances.append( f.geometry().distance(feat) )
 
         return self._inverseDistanceWeighted(values, distances)
 

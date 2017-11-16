@@ -15,18 +15,15 @@ class OSGroundGridCalculatorBilinear(OsGroundGridCalculator):
         values = []
         points = []
 
-        feat = QgsGeometry().fromPoint( QgsPoint(x, y) )
-
         pointTopLeft = QgsPoint(x - self.gridInterval, y + self.gridInterval)
         pointBottomRight  = QgsPoint(x + self.gridInterval, y - self.gridInterval)
         square = QgsRectangle(pointTopLeft, pointBottomRight)
 
         nearest = self._gridIndex.intersects(square)
-        for n in nearest:
-            f = self.gridLayer.getFeatures(request=QgsFeatureRequest(n))
-            for g in f:
-                values.append( g.attribute("HEIGHT") )
-                points.append( g.geometry().asPoint() )
+        for nearid in nearest:
+            f = self.allfeatures[nearid]
+            values.append( f.attribute("HEIGHT") )
+            points.append( f.geometry().asPoint() )
 
         return self._bilinearInterpolation(x, y, values, points)
 
