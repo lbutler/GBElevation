@@ -36,7 +36,7 @@ class TestOsGroundGrid(unittest.TestCase):
 
         featureIds = [1]
 
-        self.nt48se = OsGroundGrid(self.vl, featureIds, gridName, directory)
+        self.nt48se = OsGroundGrid(self.vl, featureIds, gridName, directory, "height", 0, 10)
 
 
     def test_run(self):

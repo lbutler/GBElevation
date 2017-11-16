@@ -43,31 +43,18 @@ class TestOsLandform(unittest.TestCase):
 
         self.osLandformObject = OsLandform(self.vl, 'height', directory, 0, 10)
 
-#    def test__createGridDictionary(self):
-#        """Tests createGridDictionary"""
-#
-#        self.osLandformObject._createGridDictionary()
-#        
-#        self.assertEqual( True, False)
-#
-#
-#    def test__createGrids(self):
-#        """Tests _createGrids"""
-#
-#        self.osLandformObject._createGridDictionary()
-#        self.osLandformObject._createGrids()
-#        
-#        self.assertEqual( True, False)
 
     def test__run(self):
         """Tests _run"""
 
+        height_test = []
+
         self.osLandformObject.run()
         features = self.vl.getFeatures()
         for f in features:
-            print f["height"]
+            height_test.append(f["height"])
 
-        self.assertEqual( True, False) 
+        self.assertEqual( height_test, [141.3000030517578, 36.099998474121094, 36.099998474121094]) 
 
 
 
