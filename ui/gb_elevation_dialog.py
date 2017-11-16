@@ -27,7 +27,7 @@ from PyQt4 import QtGui, uic
 from PyQt4.QtGui import QFileDialog, QListWidgetItem, QBrush, QColor, QInputDialog, QLineEdit
 from PyQt4.QtCore import QVariant
 
-from qgis.core import QgsMapLayerRegistry, QGis, QgsVectorDataProvider, QgsField
+from qgis.core import QgsMapLayerRegistry, QGis, QgsVectorDataProvider, QgsField, QgsMapLayer
 from qgis.gui import QgsMessageBar
 
 from GBElevation.models import OsTileLocator, OsLandform
@@ -88,7 +88,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         self.pointLayersComboBox.clear()
         layers = self.iface.legendInterface().layers()
         for layer in layers:
-            if layer.geometryType() == QGis.Point:
+            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Point:
                 self.pointLayersComboBox.addItem(layer.name(), layer.id())
 
 
@@ -142,8 +142,6 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         output = set()
         features = layer.getFeatures()
         gridSpacing = self._getGridSpacing()
-
-        print gridSpacing
 
         for feature in features:
             featurePoint = feature.geometry().asPoint()
