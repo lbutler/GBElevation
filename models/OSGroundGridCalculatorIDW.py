@@ -14,20 +14,18 @@ class OSGroundGridCalculatorIDW(OsGroundGridCalculator):
 
     def _useAlgorithm(self, x, y):
 
+        feat = QgsGeometry().fromPoint( QgsPoint(x, y ) )
+
         values = []
         distances = []
+        
+        request = QgsFeatureRequest()
+        request.setFilterFids(self._getClosestNodeFeatureIds(x,y))
 
-        feat = QgsGeometry().fromPoint( QgsPoint(x, y) )
-
-        pointTopLeft = QgsPoint(x - self.gridInterval, y + self.gridInterval)
-        pointBottomRight  = QgsPoint(x + self.gridInterval, y - self.gridInterval)
-        square = QgsRectangle(pointTopLeft, pointBottomRight)
-
-        nearest = self._gridIndex.intersects(square)
-        for nearid in nearest:
-            f = self.allfeatures[nearid]
-            values.append( f.attribute("HEIGHT") )
-            distances.append( f.geometry().distance(feat) )
+        nearestFourGridNodes = self.gridLayer.getFeatures( request )
+        for gridNode in nearestFourGridNodes:
+            values.append( gridNode.attribute("HEIGHT") )
+            distances.append( gridNode.geometry().distance(feat) )           
 
         return self._inverseDistanceWeighted(values, distances)
 

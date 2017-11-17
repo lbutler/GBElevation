@@ -13,7 +13,7 @@ from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 #Loading NTF Files
-path = os.path.join(os.path.dirname(__file__), 'testdata', 'NT48SE.NTF')
+path = os.path.join(os.path.dirname(__file__), 'testdata', 'NT48SE-2.NTF')
 title = 'NT48SE_TestOsGroundGridCalculatorIDW'
 layer = QgsVectorLayer(path, title, 'ogr')
 NT48SE = OSGroundGridCalculatorIDW(layer, 10,2 )

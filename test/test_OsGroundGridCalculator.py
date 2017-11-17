@@ -51,6 +51,13 @@ class TestOsGroundGridCalculator(unittest.TestCase):
         self.assertFalse( NT48._isAtIntersection(346800,682740))
         self.assertFalse( NT48._isAtIntersection(346826,682745.2))
 
+    def test_getNodeFeatureIds(self):
+        """Test providing an x an y and receiving the IDs of surrounding points"""
+
+        returned_nodes = [1,2, 502, 503]
+        self.assertEqual( NT48SE._getClosestNodeFeatureIds(305004.6, 705004.8), returned_nodes )
+        
+
 
 
 if __name__ == '__main__':

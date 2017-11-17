@@ -7,6 +7,8 @@ from qgis.core import QgsVectorLayer
 
 from GBElevation.models import *
 
+import time
+
 class OsLandform:
 
     def __init__(self, layer, elevationAttribute, dtmDirectory, interpolation, gridSpacing):
@@ -21,12 +23,18 @@ class OsLandform:
 
 
     def run(self):
+
+        time1 =  time.time()
+
         self._createGridDictionary()
-        self._createGrids()
 
-        for grid in self._grids:
-            grid.run()
+        for gridRef in self._gridDictionary:
+            if self._dtmExists(gridRef):
+                grid = OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, self.dtmDirectory, self.elevationAttribute, self.interpolation, self.gridSpacing)
+                grid.run()
 
+
+        print "Time to run: " + str(time1 - time.time())
 
     def _createGrids(self):
 
