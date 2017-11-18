@@ -57,19 +57,26 @@ class TestOsGroundGridCalculatorBilinear(unittest.TestCase):
     def test_bilinearInterpolation(self):
         """Manual check of Bilinear Interpolation function"""
 
-
-        points = [QgsPoint(800, 60), QgsPoint(810, 60), QgsPoint(800, 50), QgsPoint(810, 50)]
-        values = [20,10,30,35]
         answer = 22.8
 
-        self.assertAlmostEqual( NT48SE._bilinearInterpolation(803, 56, values, points), answer)
+        nodes = { 1: {"geometry": QgsPoint(800, 60), "height": 20},
+            2: {"geometry": QgsPoint(810, 60), "height": 10},
+            3: {"geometry": QgsPoint(800, 50), "height": 30},
+            4: {"geometry": QgsPoint(810, 50), "height": 35} 
+            }
+
+        self.assertAlmostEqual( NT48SE._bilinearInterpolation(803, 56, nodes), answer)
 
 
-        points = [QgsPoint(800, 60), QgsPoint(810, 60), QgsPoint(800, 50), QgsPoint(810, 50)]
-        values = [-2,-2,-2,-2]
         answer = -2
 
-        self.assertAlmostEqual( NT48SE._bilinearInterpolation(803, 56, values, points), answer)
+        nodes = { 1: {"geometry": QgsPoint(800, 60), "height": -2},
+            2: {"geometry": QgsPoint(810, 60), "height": -2},
+            3: {"geometry": QgsPoint(800, 50), "height": -2},
+            4: {"geometry": QgsPoint(810, 50), "height": -2} 
+            }
+
+        self.assertAlmostEqual( NT48SE._bilinearInterpolation(803, 56, nodes), answer)
 
 
 

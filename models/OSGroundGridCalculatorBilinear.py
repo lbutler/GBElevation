@@ -12,29 +12,29 @@ class OSGroundGridCalculatorBilinear(OsGroundGridCalculator):
 
     def _useAlgorithm(self, x, y):
 
-        values = []
-        points = []
+        featureIds = self._getClosestNodeFeatureIds(x,y)
+        values = {featureId: {'height': self.featuresHeights[0][featureId-1] } for featureId in featureIds}
 
         request = QgsFeatureRequest()
-        request.setFilterFids(self._getClosestNodeFeatureIds(x,y))
-
+        request.setFilterFids(featureIds)
         nearestFourGridNodes = self.gridLayer.getFeatures( request )
+
         for gridNode in nearestFourGridNodes:
-            values.append( gridNode.attribute("HEIGHT") )
-            points.append( gridNode.geometry().asPoint() )
+            values[gridNode.id()]['geometry'] = gridNode.geometry().asPoint()
 
-        return self._bilinearInterpolation(x, y, values, points)
+        return self._bilinearInterpolation(x, y, values)
 
-    def _bilinearInterpolation(self, x, y, values, points):
+
+    def _bilinearInterpolation(self, x, y, nodes ):
 
         result = 0
 
-        for value, point in zip(values, points):
+        for nodeId in nodes:
 
-            width = self.gridInterval - abs(point.x() - x)
-            height = self.gridInterval - abs(point.y() - y)
+            width = self.gridInterval -  abs(nodes[nodeId]["geometry"].x() - x)
+            height = self.gridInterval - abs(nodes[nodeId]["geometry"].y() - y)
 
             area = (width * height ) / self.gridInterval ** 2
-            result += area *value
+            result += area * nodes[nodeId]["height"]
 
         return result

@@ -14,27 +14,30 @@ class OSGroundGridCalculatorIDW(OsGroundGridCalculator):
 
     def _useAlgorithm(self, x, y):
 
-        feat = QgsGeometry().fromPoint( QgsPoint(x, y ) )
+        elevationPoint = QgsGeometry().fromPoint( QgsPoint(x, y ) )
 
-        values = []
-        distances = []
-        
+        featureIds = self._getClosestNodeFeatureIds(x,y)
+        values = {featureId: {'height': self.featuresHeights[0][featureId-1] } for featureId in featureIds}
+
         request = QgsFeatureRequest()
-        request.setFilterFids(self._getClosestNodeFeatureIds(x,y))
-
+        request.setFilterFids(featureIds)
         nearestFourGridNodes = self.gridLayer.getFeatures( request )
+
         for gridNode in nearestFourGridNodes:
-            values.append( gridNode.attribute("HEIGHT") )
-            distances.append( gridNode.geometry().distance(feat) )           
+            values[gridNode.id()]['distance'] = gridNode.geometry().distance(elevationPoint)
 
-        return self._inverseDistanceWeighted(values, distances)
+        return self._inverseDistanceWeighted(values)
 
-    def _inverseDistanceWeighted(self, values, distances):
+    def _inverseDistanceWeighted(self, nodes):
 
         top = 0
         bottom = 0
-        for value, distance in zip(values, distances):
-            top += value/(distance**self.power)
-            bottom +=  1/(distance**self.power)
+
+        for nodeId in nodes:
+            value = nodes[nodeId]["height"]
+            distance = nodes[nodeId]["distance"]
+
+            top += value / (distance**self.power)
+            bottom +=  1 / (distance**self.power)
 
         return top/bottom

@@ -36,19 +36,25 @@ class TestOsGroundGridCalculatorIDW(unittest.TestCase):
     def test_inverseDistanceWeighted(self):
         """Manual check of IDW function"""
 
-        values = [20,10,30,35]
-        distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
+        nodes = { 1: {"distance": 9.60468635614927, "height": 20},
+            2: {"distance":  8.5, "height": 10},
+            3: {"distance": 6.5, "height": 30},
+            4: {"distance": 4.7169905660283, "height": 35} 
+            }
 
         answer = 28.27963613
 
-        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(values, distance), answer)
+        self.assertAlmostEqual( NT48SE._inverseDistanceWeighted(nodes), answer)
 
-        values = [20,10,30,35]
-        distance = [9.60468635614927, 8.5, 6.5, 4.7169905660283]
+        nodes = { 1: {"distance": 9.60468635614927, "height": 20},
+            2: {"distance":  8.5, "height": 10},
+            3: {"distance": 6.5, "height": 30},
+            4: {"distance": 4.7169905660283, "height": 35} 
+            }
 
         answer = 26.02779539
 
-        self.assertAlmostEqual( NT48._inverseDistanceWeighted(values, distance), answer)
+        self.assertAlmostEqual( NT48._inverseDistanceWeighted(nodes), answer)
 
 
 

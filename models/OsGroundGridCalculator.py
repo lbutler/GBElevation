@@ -8,7 +8,8 @@ class OsGroundGridCalculator:
 
         self.gridLayer = gridLayer
         self.gridInterval = gridInterval
-
+        self.featuresHeights = self.gridLayer.getDoubleValues("Height")
+ 
     def calculateElevation(self, x, y):
 
         if self._isAtIntersection(x, y):
@@ -19,12 +20,8 @@ class OsGroundGridCalculator:
 
     def _getIntersectionElevation(self, x, y):
 
-        nearest = self._gridIndex.nearestNeighbor(QgsPoint(x, y), 1)
-        f = self.gridLayer.getFeatures(request=QgsFeatureRequest(nearest[0]))
-        for g in f:
-            intersectElevation = g.attribute("HEIGHT")
-
-        return intersectElevation
+        featureId = self._getIntersectionNode(x,y)[0]
+        return self.featuresHeights[0][featureId - 1]
 
 
     def _isAtIntersection(self, x, y):
@@ -50,4 +47,8 @@ class OsGroundGridCalculator:
 
         return [ firstNode,  firstNode + 1,  firstNode + 501 ,  firstNode + 502    ]
 
-    
+    def _getIntersectionNode(self, x, y):
+        xDirection = 1 + (int((x % 5000)/10) * 501)
+        yDirection = int((y % 5000)/10)
+        return [xDirection + yDirection]
+
