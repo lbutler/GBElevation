@@ -23,9 +23,9 @@
 
 import os
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QFileDialog, QListWidgetItem, QBrush, QColor, QInputDialog, QLineEdit
-from PyQt4.QtCore import QVariant
+from PyQt4 import QtGui, uic, QtCore
+from PyQt4.QtGui import QFileDialog, QListWidgetItem, QBrush, QColor, QInputDialog, QLineEdit, QProgressBar
+from PyQt4.QtCore import QVariant, Qt
 
 from qgis.core import QgsMapLayerRegistry, QGis, QgsVectorDataProvider, QgsField, QgsMapLayer
 from qgis.gui import QgsMessageBar
@@ -58,21 +58,49 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         self.os10mRadioButton.toggled.connect(self._updateDtmListItems)
         self.os50mRadioButton.toggled.connect(self._updateDtmListItems)
 
-
     def run(self):
-
         layer = self._getCurrentSelectedLayer()
-
         elevationAttribute = self.attributeComboBox.itemText(self.attributeComboBox.currentIndex())
         dtmDirectory = self.dtmFolder.text()
         interpolation = self.interpolationMethodComboBox.currentIndex()
-
         gridSpacing = self._getGridSpacing()
 
-        self.osLandformObject = OsLandform(layer, elevationAttribute, dtmDirectory, interpolation, gridSpacing)
-        self.osLandformObject.run()
+        self._progressbar_create()
 
-        self.iface.messageBar().pushMessage("GB NTF Elevations", "Elevations have been added", level=QgsMessageBar.INFO)
+
+        thread = self.thread = QtCore.QThread()
+        worker = self.worker = OsLandform(layer, elevationAttribute, dtmDirectory, interpolation, gridSpacing)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.progress.connect(self._progressbar_update)
+        worker.finished.connect(self._progressbar_clear)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        worker.finished.connect(thread.quit)
+        thread.start()
+
+    def _progressbar_create(self):
+        self.progressMessageBar = self.iface.messageBar().createMessage("Adding elevations to layer...")
+        self.progress = QProgressBar()
+        self.progress.setMaximum(100)
+        self.progress.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.progressMessageBar.layout().addWidget(self.progress)
+        self.iface.messageBar().pushWidget(self.progressMessageBar, self.iface.messageBar().INFO)
+
+    def _progressbar_clear(self):
+        self.iface.messageBar().clearWidgets()
+        if self.worker.abort:
+            self.iface.messageBar().pushMessage("GB NTF Elevations", "Adding elevations was cancelled, not all elevations may have been set", level=QgsMessageBar.WARNING)
+        else:
+            self.iface.messageBar().pushMessage("GB NTF Elevations", "Elevations have been added", level=QgsMessageBar.INFO)
+
+    def _progressbar_update( self, percent):
+        # If they close the progressbar we assume they want to stop
+        # I'm not sure of a better way to capture this so using an exception
+        try:
+            self.progress.setValue(percent)
+        except RuntimeError:
+            self.worker.abort = True
 
 
     def prepareForm(self):
