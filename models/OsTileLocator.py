@@ -38,6 +38,15 @@ class OsTileLocator:
 
         return tenKmSqTile
 
+    def tenKmqlTileForNtfGrid(self):
+
+        firstNumber = math.trunc( (self.x % 100000) / 20000 ) * 2
+        secondNumber = math.trunc( (self.y % 100000) / 20000 ) * 2
+
+        tenKmqlTileForNtfGrid = self.hundredKmSqTile() + str(firstNumber) + str(secondNumber)
+
+        return tenKmqlTileForNtfGrid
+
 
     def fiveKmSqTile(self):
 

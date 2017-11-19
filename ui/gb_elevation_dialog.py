@@ -183,7 +183,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
             if gridSpacing == 10:
                 output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).fiveKmSqTile() )
             else:
-                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmSqTile() )
+                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmqlTileForNtfGrid() )
 
         return output
 

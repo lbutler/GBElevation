@@ -17,7 +17,10 @@ path = os.path.join(os.path.dirname(__file__), 'testdata', 'NT48SE.NTF')
 title = 'NT48SE_TestOsGroundGridCalculator'
 layer = QgsVectorLayer(path, title, 'ogr')
 NT48SE = OsGroundGridCalculator(layer, 10)
-NT48 = OsGroundGridCalculator(layer, 50)
+
+path_NT48 = os.path.join(os.path.dirname(__file__), 'testdata', 'nt48.ntf')
+layer_NT48 = QgsVectorLayer(path_NT48, '50m Grid NT48', 'ogr')
+NT48 = OsGroundGridCalculator(layer_NT48, 50)
 
 class TestOsGroundGridCalculator(unittest.TestCase):
 
@@ -53,9 +56,16 @@ class TestOsGroundGridCalculator(unittest.TestCase):
 
     def test_getNodeFeatureIds(self):
         """Test providing an x an y and receiving the IDs of surrounding points"""
+        #10m test
+        self.assertEqual( NT48SE._getClosestNodeFeatureIds(345003.02,680001.95), [1,2, 502, 503] )
+        self.assertEqual( NT48SE._getClosestNodeFeatureIds(347554.33,682572.43), [128013, 128014, 128514, 128515] )
+        self.assertEqual( NT48SE._getClosestNodeFeatureIds(349943.97,684963.43), [247991, 247992, 248492, 248493] )
 
-        returned_nodes = [1,2, 502, 503]
-        self.assertEqual( NT48SE._getClosestNodeFeatureIds(305004.6, 705004.8), returned_nodes )
+        #50m test
+        self.assertEqual( NT48._getClosestNodeFeatureIds(340021.3,680015.1), [1,2, 402, 403] )
+        self.assertEqual( NT48._getClosestNodeFeatureIds(340167.5,680113.8), [1206, 1207, 1607, 1608] )
+        self.assertEqual( NT48._getClosestNodeFeatureIds(357022.2,699213.6), [136725, 136726, 137126, 137127] )
+
         
     def test_getIntersectionNode(self):
         """Test providing an x an y and receive the ID of the intersection points"""
