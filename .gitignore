@@ -3,6 +3,7 @@
 .noseids
 .coverage
 Thumbs.db
+*.zip
 
 #OS Grid files
 *.ntf

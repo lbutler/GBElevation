@@ -40,15 +40,24 @@ SOURCES = \
 	__init__.py \
 	gb_elevation.py gb_elevation_dialog.py
 
-PLUGINNAME = GBElevation
+PLUGINNAME = GBElevation2
 
 PY_FILES = \
 	__init__.py \
-	gb_elevation.py gb_elevation_dialog.py
+	gb_elevation.py
 
-UI_FILES = gb_elevation_dialog_base.ui
+UI_FILES = ui/gb_elevation_dialog_base.ui ui/gb_elevation_dialog.py ui/__init__.py
 
 EXTRAS = metadata.txt icon.png
+
+MODEL_FILES =  \
+	./models/__init__.py \
+	./models/OsGroundGrid.py \
+	./models/OsGroundGridCalculator.py \
+	./models/OSGroundGridCalculatorBilinear.py \
+	./models/OSGroundGridCalculatorIDW.py \
+	./models/OsLandform.py \
+	./models/OsTileLocator.py 
 
 EXTRA_DIRS =
 
@@ -105,7 +114,7 @@ testcoverage: compile transcompile
 		nosetests -v --with-id --with-coverage --cover-erase --cover-package=. \
 		3>&1 1>&2 2>&3 3>&- || true
 
-deploy: compile doc transcompile
+deploy: compile transcompile
 	@echo
 	@echo "------------------------------------------"
 	@echo "Deploying plugin to your .qgis2 directory."
@@ -114,12 +123,15 @@ deploy: compile doc transcompile
 	# the Python plugin directory is located at:
 	# $HOME/$(QGISDIR)/python/plugins
 	mkdir -p $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+	mkdir -p $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/ui
+	mkdir -p $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/models
 	cp -vf $(PY_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
-	cp -vf $(UI_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+	cp -vf $(UI_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/ui
 	cp -vf $(COMPILED_RESOURCE_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(EXTRAS) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
-	cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
-	cp -vfr $(HELP) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/help
+	#cp -vfr i18n $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
+	cp -vf $(MODEL_FILES) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/models
+	#cp -vfr $(HELP) $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/help
 	# Copy extra directories if any
   # (temporarily removed)
 
@@ -150,7 +162,7 @@ zip: deploy dclean
 	# The zip target deploys the plugin and creates a zip file with the deployed
 	# content. You can then upload the zip file on http://plugins.qgis.org
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
+	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r '$(CURDIR)/$(PLUGINNAME).zip' $(PLUGINNAME)
 
 package: compile
 	# Create a zip package of the plugin named $(PLUGINNAME).zip.

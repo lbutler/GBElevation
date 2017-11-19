@@ -10,11 +10,11 @@
 name=GB NTF Elevation
 qgisMinimumVersion=2.0
 description=Calculate elevation of points from 10m & 50m OS NTF files
-version=0.1
+version=1.0
 author=Luke Butler
 email=lukepbutler@gmail.com
 
-about=Calcualte the elevation of point files from the historical and now withdrawn Ordnance Survey Land-Form Panorama and Profile 10m and 50m NTF DTM files
+about=Calcualte the elevation of point files from the historical and now withdrawn Ordnance Survey Land-Form Panorama and Profile 10m and 50m NTF DTM files.
 
 tracker=https://github.com/lbutler/gbelevation/issues
 repository=https://github.com/lbutler/gbelevation
@@ -23,7 +23,7 @@ repository=https://github.com/lbutler/gbelevation
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-# changelog=
+ changelog= 1.0 Initial Release
 
 # Tags are comma separated with spaces allowed
 tags=dem, ordnance survey
