@@ -7,3 +7,6 @@ Thumbs.db
 
 #OS Grid files
 *.ntf
+
+#symlink
+test/testdata/50mGrid
