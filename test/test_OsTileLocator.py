@@ -24,6 +24,18 @@ class TestOsTileLocator(unittest.TestCase):
         OV = OsTileLocator(593091,587066)
         self.assertEqual( OV.tenKmSqTile() , 'OV98')
 
+    def test_tenKmqlTileForNtfGrid(self):
+        """Test Ten Km Sq Tile for Ntf grid file"""
+        self.assertEqual( OsTileLocator(205609, 807137).tenKmqlTileForNtfGrid(), 'NH00' ) #NH00
+        self.assertEqual( OsTileLocator(214717, 807395).tenKmqlTileForNtfGrid(), 'NH00' ) #NH10
+        self.assertEqual( OsTileLocator(205265, 814784).tenKmqlTileForNtfGrid(), 'NH00' ) #NH01
+        self.assertEqual( OsTileLocator(214631, 814870).tenKmqlTileForNtfGrid(), 'NH00' ) #NH11
+        self.assertEqual( OsTileLocator(204664, 825181).tenKmqlTileForNtfGrid(), 'NH02' ) #NH02
+        self.assertEqual( OsTileLocator(215147, 824752).tenKmqlTileForNtfGrid(), 'NH02' ) #NH12
+        self.assertEqual( OsTileLocator(224684, 824838).tenKmqlTileForNtfGrid(), 'NH22' ) #NH22
+        self.assertEqual( OsTileLocator(224856, 815472).tenKmqlTileForNtfGrid(), 'NH20' ) #NH21
+        self.assertEqual( OsTileLocator(224942, 806020).tenKmqlTileForNtfGrid(), 'NH20' ) #NH20
+
     def test_fiveKmSqTile(self):
         """Test Five Km Sq Tile"""
 
