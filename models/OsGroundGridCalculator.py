@@ -39,13 +39,20 @@ class OsGroundGridCalculator:
             second column which is 502L
             We are using this function to figure out the IDs of the four closest nodes to any XY pair
             so we can quickly grab them without a spatial index, crazy risky stuff  """
+        if self.gridInterval == 10:
+            rowsInDtm = 501
+            modulas = 5000
+        else:
+            rowsInDtm = 401
+            modulas = 20000
 
-        xDirection = 1 + int((x % 5000)/10) * 501
-        yDirection = int((y % 5000)/10)
+
+        xDirection = 1 + int((x % modulas)/self.gridInterval) * rowsInDtm
+        yDirection = int((y % modulas)/self.gridInterval)
 
         firstNode = xDirection + yDirection
 
-        return [ firstNode,  firstNode + 1,  firstNode + 501 ,  firstNode + 502    ]
+        return [ firstNode,  firstNode + 1,  firstNode + rowsInDtm ,  firstNode + rowsInDtm + 1    ]
 
     def _getIntersectionNode(self, x, y):
         xDirection = 1 + (int((x % 5000)/10) * 501)
