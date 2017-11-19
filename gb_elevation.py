@@ -183,13 +183,12 @@ class GBElevation:
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
-        self.dlg.show()
         self.dlg.prepareForm()
+        if self.dlg._pointLayers > 0:
+            self.dlg.show()
 
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            self.dlg.run()
+            # Run the dialog event loop
+            result = self.dlg.exec_()
+            # See if OK was pressed
+            if result:
+                self.dlg.run()

@@ -30,15 +30,18 @@ class OsLandform(QtCore.QObject):
         try:
             self._createGridDictionary()
             self.feature_count = len(self._gridDictionary)
-
+            
             for gridRef in self._gridDictionary:
+                
                 if self.abort is True:
                     self.killed.emit()
                     break
+
                 if self._dtmExists(gridRef):
-                    grid = OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, self.dtmDirectory, self.elevationAttribute, self.interpolation, self.gridSpacing)
+                    gridPath = self._dtmPath(gridRef)
+                    grid = OsGroundGrid(self.layer, self._gridDictionary[gridRef], gridRef, gridPath, self.elevationAttribute, self.interpolation, self.gridSpacing)
                     grid.run()
-                    self.calculate_progress()
+                self.calculate_progress()
 
         except:
             import traceback
@@ -65,8 +68,19 @@ class OsLandform(QtCore.QObject):
 
 
     def _dtmExists(self, dtmName):
-        path = os.path.join(self.dtmDirectory, dtmName + '.NTF')
-        return os.path.isfile(path)
+        upperCasePath = os.path.join(self.dtmDirectory, dtmName + '.NTF')
+        lowerCasePath = os.path.join(self.dtmDirectory, dtmName.lower() + '.ntf')
+        exists = os.path.isfile(upperCasePath) or os.path.isfile(lowerCasePath)
+        return exists
+
+    def _dtmPath(self, dtmName):
+        upperCasePath = os.path.join(self.dtmDirectory, dtmName + '.NTF')
+        if os.path.exists(upperCasePath):
+            path = upperCasePath
+        else:
+            path = os.path.join(self.dtmDirectory, dtmName.lower() + '.ntf')
+
+        return path
 
 
     def calculate_progress(self):

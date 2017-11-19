@@ -17,7 +17,7 @@ class TestOsGroundGrid(unittest.TestCase):
     def setUp(self):
         """Runs before each test."""
         
-        directory = os.path.join(os.path.dirname(__file__), 'testdata' )
+        gridPath = os.path.join(os.path.dirname(__file__), 'testdata', 'NT48SE.NTF' )
         gridName = 'NT48SE'
 
         # create layer
@@ -36,7 +36,7 @@ class TestOsGroundGrid(unittest.TestCase):
 
         featureIds = [1]
 
-        self.nt48se = OsGroundGrid(self.vl, featureIds, gridName, directory, "height", 0, 10)
+        self.nt48se = OsGroundGrid(self.vl, featureIds, gridName, gridPath, "height", 0, 10)
 
 
     def test_run(self):

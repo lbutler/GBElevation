@@ -105,6 +105,9 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
     def prepareForm(self):
         self.addPointLayers()
+        if self._pointLayers == 0:
+            self.iface.messageBar().pushMessage("GB NTF Elevations", "No point layers found, please open at least one point layer first", level=QgsMessageBar.WARNING)
+
 
     def selectDtmFolderLocation(self):
         folderPath = ''
@@ -118,12 +121,16 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         for layer in layers:
             if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Point:
                 self.pointLayersComboBox.addItem(layer.name(), layer.id())
+        self._pointLayers = self.pointLayersComboBox.count()
 
 
     def _pointsLayerChanged(self, idx):
 
         if idx <> -1:
             layer = self._getCurrentSelectedLayer()
+
+            if layer.crs().authid() <> 'EPSG:27700':
+                self.iface.messageBar().pushMessage("GB NTF Elevations", "The selected layer is not in the British National Grid (EPSG:27700), produced elevation results may be incorrect", level=QgsMessageBar.WARNING)
 
             self._updateAttributes(layer)
             self._updateDtmListItems()
@@ -182,8 +189,9 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
 
     def _dtmInFolder(self, dtmName):
-        path = os.path.join(self.dtmFolder.text(), dtmName + '.NTF')
-        return os.path.isfile(path)
+        upperCasePath = os.path.join(self.dtmFolder.text(), dtmName + '.NTF')
+        lowerCasePath = os.path.join(self.dtmFolder.text(), dtmName.lower() + '.ntf')
+        return (os.path.isfile(upperCasePath) or os.path.isfile(lowerCasePath))
 
 
     def _createElevationAttribute(self):
@@ -193,6 +201,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
 
             layer = self._getCurrentSelectedLayer()
             self._updateAttributes(layer)
+            self.attributeComboBox.setCurrentIndex( self.attributeComboBox.count() -1 )
 
 
     def _createAttribute(self, text):

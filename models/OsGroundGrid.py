@@ -8,7 +8,7 @@ from GBElevation.models import *
 
 class OsGroundGrid:
 
-    def __init__(self, updateLayer, featureIds, gridName, directory, elevationAttribute, interpolation, gridSpacing):
+    def __init__(self, updateLayer, featureIds, gridName, gridPath, elevationAttribute, interpolation, gridSpacing):
         self.updateLayer = updateLayer
         
         self.gridName = gridName
@@ -20,8 +20,7 @@ class OsGroundGrid:
         request.setFilterFids(featureIds)
         self.features = updateLayer.getFeatures(request)
 
-        path = os.path.join(directory, gridName + '.NTF')
-        self.layer = QgsVectorLayer(path, gridName, 'ogr')
+        self.layer = QgsVectorLayer(gridPath, gridName, 'ogr')
 
         if self.interpolation == 0:
             self.grid = OSGroundGridCalculatorBilinear(self.layer, self.gridSpacing)
