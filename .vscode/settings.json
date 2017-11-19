@@ -10,7 +10,7 @@
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
-        "*/**/**pyc": true,
+        "*/**/pyc": true,
         "**/.hg": true,
         "**/.noseids": true,
         "**/.coverage": true,
