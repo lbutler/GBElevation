@@ -1,24 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-/***************************************************************************
- GBElevationDialog
-                                 A QGIS plugin
- Calculate elevation of points from 10m & 50m OS NTF files
-                             -------------------
-        begin                : 2017-10-19
-        git sha              : $Format:%H$
-        copyright            : (C) 2017 by Luke Butler
-        email                : lukepbutler@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ GBElevation - QGIS Plugin
+ *************************
+ Copyright (c) 2017 Luke Butler (luke@matrado.ca) - Matrado Limited
+ Licence - github.com/lbutler/GBElevation/blob/master/LICENSE
 """
 
 import os
@@ -90,9 +75,9 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
     def _progressbar_clear(self):
         self.iface.messageBar().clearWidgets()
         if self.worker.abort:
-            self.iface.messageBar().pushMessage("GB NTF Elevations", "Adding elevations was cancelled, not all elevations may have been set", level=QgsMessageBar.WARNING)
+            self.iface.messageBar().pushMessage("GB Elevation", "Adding elevations was cancelled, not all elevations may have been set", level=QgsMessageBar.WARNING)
         else:
-            self.iface.messageBar().pushMessage("GB NTF Elevations", "Elevations have been added", level=QgsMessageBar.INFO)
+            self.iface.messageBar().pushMessage("GB Elevation", "Elevations have been added", level=QgsMessageBar.INFO)
 
     def _progressbar_update( self, percent):
         # If they close the progressbar we assume they want to stop
@@ -106,7 +91,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
     def prepareForm(self):
         self.addPointLayers()
         if self._pointLayers == 0:
-            self.iface.messageBar().pushMessage("GB NTF Elevations", "No point layers found, please open at least one point layer first", level=QgsMessageBar.WARNING)
+            self.iface.messageBar().pushMessage("GB Elevation", "No point layers found, please open at least one point layer first", level=QgsMessageBar.WARNING)
 
 
     def selectDtmFolderLocation(self):
@@ -130,7 +115,7 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
             layer = self._getCurrentSelectedLayer()
 
             if layer.crs().authid() <> 'EPSG:27700':
-                self.iface.messageBar().pushMessage("GB NTF Elevations", "The selected layer is not in the British National Grid (EPSG:27700), produced elevation results may be incorrect", level=QgsMessageBar.WARNING)
+                self.iface.messageBar().pushMessage("GB Elevation", "The selected layer is not in the British National Grid (EPSG:27700), produced elevation results may be incorrect", level=QgsMessageBar.WARNING)
 
             self._updateAttributes(layer)
             self._updateDtmListItems()
