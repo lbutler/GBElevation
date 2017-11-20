@@ -14,7 +14,7 @@ version=1.0
 author=Luke Butler
 email=lukepbutler@gmail.com
 
-about=Calcualte the elevation of point files from the historical and now withdrawn Ordnance Survey Land-Form Panorama and Profile 10m and 50m NTF DTM files.
+about=Calcualte the elevation of point files from the historical and now withdrawn Ordnance Survey Land-Form Panorama and Profile 10m and 50m NTF DTM files. Please not you MUST already have the Ordance Survey Land-Form NTF files for this plugin to work, OS no longer provides this dataset.
 
 tracker=https://github.com/lbutler/gbelevation/issues
 repository=https://github.com/lbutler/gbelevation
