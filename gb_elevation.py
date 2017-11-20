@@ -61,7 +61,7 @@ class GBElevation:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&GB NTF Elevation')
+        self.menu = self.tr(u'&GB Elevation')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'GBElevation')
         self.toolbar.setObjectName(u'GBElevation')
