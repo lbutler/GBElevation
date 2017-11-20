@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
 """
- GBElevation - QGIS Plugin
- *************************
- Copyright (c) 2017 Luke Butler (luke@matrado.ca) - Matrado Limited
- Licence - github.com/lbutler/GBElevation/blob/master/LICENSE
+/***************************************************************************
+ GBElevation
+                                 A QGIS plugin
+ Calculate elevation of points from 10m & 50m OS NTF files
+                              -------------------
+        begin                : 2017-10-19
+        git sha              : $Format:%H$
+        copyright            : (C) 2017 by Luke Butler - Matrado Limited
+        email                : luke@matrado.ca
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 """
 
 from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureRequest,QgsGeometry, QgsRectangle
