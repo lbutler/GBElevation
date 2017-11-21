@@ -128,9 +128,6 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         if idx <> -1:
             layer = self._getCurrentSelectedLayer()
 
-            if layer.crs().authid() <> 'EPSG:27700':
-                self.iface.messageBar().pushMessage("GB Elevation", "The selected layer is not in the British National Grid (EPSG:27700), produced elevation results may be incorrect", level=QgsMessageBar.WARNING)
-
             self._updateAttributes(layer)
             self._updateDtmListItems()
 
