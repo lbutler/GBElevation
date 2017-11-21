@@ -59,7 +59,7 @@ class OsGroundGrid:
         updateFieldIdx = dp.fields().indexFromName(self.elevationAttribute)
 
         for feature in self.features:
-            elevation = self.grid.calculateElevation( feature.geometry().asPoint().x(), feature.geometry().asPoint().y() )
+            elevation = self.grid.calculateElevation( feature.geometry(), self.updateLayer.crs() )
             updateMap[feature.id()] = { updateFieldIdx: elevation}
 
         dp.changeAttributeValues( updateMap )

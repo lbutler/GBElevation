@@ -25,7 +25,9 @@ import unittest
 from qgis.core import (
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
-    QgsVectorLayer)
+    QgsVectorLayer,
+    QgsGeometry,
+    QgsPoint)
 
 from GBElevation.models import *
 
@@ -39,6 +41,7 @@ layer = QgsVectorLayer(path, title, 'ogr')
 NT48SE = OSGroundGridCalculatorIDW(layer, 10,2 )
 NT48 = OSGroundGridCalculatorIDW(layer, 50, 1)
 
+crs27700 = QgsCoordinateReferenceSystem(27700) 
 
 class TestOsGroundGridCalculatorIDW(unittest.TestCase):
 
@@ -49,8 +52,8 @@ class TestOsGroundGridCalculatorIDW(unittest.TestCase):
     def test_calculateElevation10m(self):
         """Test Elevation for 10m"""
 
-        self.assertAlmostEqual( NT48SE.calculateElevation(346895, 682505), 38.875)
-        self.assertAlmostEqual( NT48SE.calculateElevation(346892.5, 682505), 38.81944444)
+        self.assertAlmostEqual( NT48SE.calculateElevation( self.geometryFromPoint(346895, 682505), crs27700), 38.875)
+        self.assertAlmostEqual( NT48SE.calculateElevation( self.geometryFromPoint(346892.5, 682505), crs27700), 38.81944444)
 
 
     def test_inverseDistanceWeighted(self):
@@ -76,6 +79,9 @@ class TestOsGroundGridCalculatorIDW(unittest.TestCase):
 
         self.assertAlmostEqual( NT48._inverseDistanceWeighted(nodes), answer)
 
+
+    def geometryFromPoint(self, x, y):
+        return QgsGeometry.fromPoint( QgsPoint(x, y) )
 
 
 if __name__ == '__main__':

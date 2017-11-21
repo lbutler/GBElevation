@@ -25,7 +25,9 @@ import unittest
 from qgis.core import (
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
-    QgsVectorLayer)
+    QgsVectorLayer,
+    QgsGeometry,
+    QgsPoint)
 
 from GBElevation.models import *
 
@@ -42,6 +44,8 @@ path_NT48 = os.path.join(os.path.dirname(__file__), 'testdata', 'nt48.ntf')
 layer_NT48 = QgsVectorLayer(path_NT48, '50m Grid NT48', 'ogr')
 NT48 = OsGroundGridCalculator(layer_NT48, 50)
 
+crs27700 = QgsCoordinateReferenceSystem(27700) 
+
 class TestOsGroundGridCalculator(unittest.TestCase):
 
     def setUp(self):
@@ -51,17 +55,17 @@ class TestOsGroundGridCalculator(unittest.TestCase):
     def test_calculateElevationAtGridIntersection(self):
         """Test Elevation for 10m at intersections"""
 
-        self.assertEqual( NT48SE.calculateElevation(346790, 683350), -2)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683360), -2)
-        self.assertEqual( NT48SE.calculateElevation(346800, 682740), 36.09999847412109375)
-        self.assertEqual( NT48SE.calculateElevation(346800, 682750), 35.90000152587890625)
-        self.assertEqual( NT48SE.calculateElevation(346800, 682760), 35.5)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683080), 16.10000038146972656)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683090), 9)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683040), 22.10000038146972656)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683050), 21)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683060), 19.79999923706054688)
-        self.assertEqual( NT48SE.calculateElevation(346790, 683070), 18.20000076293945312)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683350), crs27700) , -2)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683360), crs27700) , -2)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346800, 682740), crs27700) , 36.09999847412109375)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346800, 682750), crs27700) , 35.90000152587890625)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346800, 682760), crs27700) , 35.5)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683080), crs27700) , 16.10000038146972656)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683090), crs27700) , 9)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683040), crs27700) , 22.10000038146972656)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683050), crs27700) , 21)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683060), crs27700) , 19.79999923706054688)
+        self.assertEqual( NT48SE.calculateElevation( self.geometryFromPoint(346790, 683070), crs27700) , 18.20000076293945312)
 
 
     def test_isAtIntersection(self):
@@ -92,8 +96,12 @@ class TestOsGroundGridCalculator(unittest.TestCase):
 
         returned_nodes = [90015]
         self.assertEqual( NT48SE._getIntersectionNode(346790, 683350), returned_nodes )
-        
 
+
+
+
+    def geometryFromPoint(self, x, y):
+        return QgsGeometry.fromPoint( QgsPoint(x, y) )
 
 if __name__ == '__main__':
     unittest.main()
