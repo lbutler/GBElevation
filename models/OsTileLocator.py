@@ -20,12 +20,14 @@
  ***************************************************************************/
 """
 import math
+from qgis.core import QgsGeometry, QgsCoordinateReferenceSystem, QgsCoordinateTransform
 
 class OsTileLocator:
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, featureGeometry, sourceCrs):
+        self.featureGeometry = featureGeometry
+        self.sourceCrs = sourceCrs
+        self._setXYinCrs27700( featureGeometry, sourceCrs)
         self.grid = \
         [['V','W','X','Y','Z'], \
         ['Q','R','S','T','U'], \
@@ -90,3 +92,14 @@ class OsTileLocator:
             return True
         else:
             return False
+
+    def _setXYinCrs27700( self, featureGeometry, sourceCrs ):
+        if sourceCrs.authid() <> 'EPSG:27700':
+            destCrs = QgsCoordinateReferenceSystem(27700)
+            transformCrs = QgsCoordinateTransform(sourceCrs, destCrs)
+            pointTransformed = transformCrs.transform(featureGeometry.asPoint())
+        else:
+            pointTransformed = featureGeometry.asPoint()
+
+        self.x = pointTransformed.x()
+        self.y = pointTransformed.y()

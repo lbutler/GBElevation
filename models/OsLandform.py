@@ -80,11 +80,11 @@ class OsLandform(QtCore.QObject):
     def _createGridDictionary(self):
 
         for feature in self.layer.getFeatures():
-            featurePoint = feature.geometry().asPoint()
+            featureGeometry = feature.geometry()
             if self.gridSpacing == 10:
-                self._gridDictionary[ OsTileLocator( featurePoint.x(), featurePoint.y() ).fiveKmSqTile() ].append(feature.id())
+                self._gridDictionary[ OsTileLocator( featureGeometry, self.layer.crs() ).fiveKmSqTile() ].append(feature.id())
             else:
-                self._gridDictionary[ OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmqlTileForNtfGrid() ].append(feature.id())
+                self._gridDictionary[ OsTileLocator( featureGeometry, self.layer.crs() ).tenKmqlTileForNtfGrid() ].append(feature.id())
 
 
     def _dtmExists(self, dtmName):
