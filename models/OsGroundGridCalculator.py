@@ -20,7 +20,8 @@
  ***************************************************************************/
 """
 
-from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureRequest,QgsGeometry
+from qgis.core import QgsVectorLayer, QgsSpatialIndex, QgsPoint, QgsFeatureRequest,QgsGeometry,QgsCoordinateReferenceSystem, QgsCoordinateTransform
+ 
 
 class OsGroundGridCalculator:
 
@@ -30,7 +31,12 @@ class OsGroundGridCalculator:
         self.gridInterval = gridInterval
         self.featuresHeights = self.gridLayer.getDoubleValues("Height")
  
-    def calculateElevation(self, x, y):
+    def calculateElevation(self, featureGeometry, sourceCrs):
+
+        pointTransformed = self._setXYinCrs27700( featureGeometry, sourceCrs )
+
+        x = pointTransformed.x()
+        y = pointTransformed.y()
 
         if self._isAtIntersection(x, y):
             return self._getIntersectionElevation(x,y)
@@ -79,3 +85,13 @@ class OsGroundGridCalculator:
         yDirection = int((y % 5000)/10)
         return [xDirection + yDirection]
 
+
+    def _setXYinCrs27700( self, featureGeometry, sourceCrs ):
+        if sourceCrs.authid() <> 'EPSG:27700':
+            destCrs = QgsCoordinateReferenceSystem(27700)
+            transformCrs = QgsCoordinateTransform(sourceCrs, destCrs)
+            pointTransformed = transformCrs.transform(featureGeometry.asPoint())
+        else:
+            pointTransformed = featureGeometry.asPoint()
+
+        return pointTransformed

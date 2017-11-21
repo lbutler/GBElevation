@@ -128,9 +128,6 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         if idx <> -1:
             layer = self._getCurrentSelectedLayer()
 
-            if layer.crs().authid() <> 'EPSG:27700':
-                self.iface.messageBar().pushMessage("GB Elevation", "The selected layer is not in the British National Grid (EPSG:27700), produced elevation results may be incorrect", level=QgsMessageBar.WARNING)
-
             self._updateAttributes(layer)
             self._updateDtmListItems()
 
@@ -178,11 +175,11 @@ class GBElevationDialog(QtGui.QDialog, FORM_CLASS):
         gridSpacing = self._getGridSpacing()
 
         for feature in features:
-            featurePoint = feature.geometry().asPoint()
+            featureGeometry = feature.geometry()
             if gridSpacing == 10:
-                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).fiveKmSqTile() )
+                output.add( OsTileLocator( featureGeometry, layer.crs() ).fiveKmSqTile() )
             else:
-                output.add( OsTileLocator( featurePoint.x(), featurePoint.y() ).tenKmqlTileForNtfGrid() )
+                output.add( OsTileLocator( featureGeometry, layer.crs() ).tenKmqlTileForNtfGrid() )
 
         return output
 
